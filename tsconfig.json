@@ -16,6 +16,15 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "graph-modeler": [
+        // "dist/graph-modeler"
+        "projects/graph-modeler-lib/src/public_api.ts" // for development
+      ],
+      "graph-modeler/*": [
+        "dist/graph-modeler/*"
+      ]
+    }
   }
 }

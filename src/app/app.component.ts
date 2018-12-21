@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +6,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'graph-modeler-lib-app';
+
+  data: any;
+
+  constructor() {}
+
+  onSchemaSelected(result: any) {
+    console.log('onSchemaSelected', result);
+    this.data = undefined;
+    this.data = result;
+  }
+
 }

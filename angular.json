@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "graph-modeler-lib-app": {
+    "graph-modeler-app": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/graph-modeler-lib-app",
+            "outputPath": "dist/graph-modeler-app",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "graph-modeler-lib-app:build"
+            "browserTarget": "graph-modeler-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "graph-modeler-lib-app:build:production"
+              "browserTarget": "graph-modeler-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "graph-modeler-lib-app:build"
+            "browserTarget": "graph-modeler-app:build"
           }
         },
         "test": {
@@ -107,7 +107,7 @@
           },
           "configurations": {
             "production": {
-              "devServerTarget": "graph-modeler-lib-app:serve:production"
+              "devServerTarget": "graph-modeler-app:serve:production"
             }
           }
         },
@@ -121,7 +121,46 @@
           }
         }
       }
+    },
+    "graph-modeler-lib": {
+      "root": "projects/graph-modeler-lib",
+      "sourceRoot": "projects/graph-modeler-lib/src",
+      "projectType": "library",
+      "prefix": "vn",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/graph-modeler-lib/tsconfig.lib.json",
+            "project": "projects/graph-modeler-lib/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/graph-modeler-lib/src/test.ts",
+            "tsConfig": "projects/graph-modeler-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/graph-modeler-lib/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/graph-modeler-lib/tsconfig.lib.json",
+              "projects/graph-modeler-lib/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
-  "defaultProject": "graph-modeler-lib-app"
+  "defaultProject": "graph-modeler-app"
 }

@@ -1,0 +1,131 @@
+{
+  "nodes": [{
+    "data": {
+      "id": "9",
+      "name": "Create",
+      "shapeType": "ellipse",
+      "borderColor": "#949393",
+      "weigth": 10,
+      "backgroundColor": "#949393",
+      "backgroundOpacity": "1",
+      "testValue": "visible",
+      "subNodes": []
+    }
+  }, {
+    "data": {
+      "id": "10",
+      "name": "Create Update Person",
+      "shapeType": "ellipse",
+      "borderColor": "#949393",
+      "weigth": 10,
+      "backgroundColor": "#949393",
+      "backgroundOpacity": "0",
+      "testValue": "visible",
+      "subNodes": [{
+        "data": {
+          "id": "10-0",
+          "name": "Move",
+          "shapeType": "roundrectangle",
+          "borderColor": "#949393",
+          "weigth": 10,
+          "backgroundColor": "#949393",
+          "backgroundOpacity": "0",
+          "testValue": "hidden"
+        }
+      }]
+    }
+  }, {
+    "data": {
+      "id": "11",
+      "name": "Provision User Accounts",
+      "shapeType": "ellipse",
+      "borderColor": "#949393",
+      "weigth": 10,
+      "backgroundColor": "#949393",
+      "backgroundOpacity": "0",
+      "testValue": "visible",
+      "subNodes": [{
+        "data": {
+          "id": "11-0",
+          "name": "Move",
+          "shapeType": "roundrectangle",
+          "borderColor": "#949393",
+          "weigth": 10,
+          "backgroundColor": "#949393",
+          "backgroundOpacity": "0",
+          "testValue": "hidden"
+        }
+      }]
+    }
+  }, {
+    "data": {
+      "id": "12",
+      "name": "Completed",
+      "shapeType": "ellipse",
+      "borderColor": "#949393",
+      "weigth": 10,
+      "backgroundColor": "#949393",
+      "backgroundOpacity": "1",
+      "testValue": "visible",
+      "subNodes": [{
+        "data": {
+          "id": "12-0",
+          "name": "Provision User Account",
+          "shapeType": "roundrectangle",
+          "borderColor": "#949393",
+          "weigth": 10,
+          "backgroundColor": "#949393",
+          "backgroundOpacity": "0",
+          "testValue": "hidden"
+        }
+      }, {
+        "data": {
+          "id": "12-1",
+          "name": "Provision User Account",
+          "shapeType": "roundrectangle",
+          "borderColor": "#949393",
+          "weigth": 10,
+          "backgroundColor": "#949393",
+          "backgroundOpacity": "0",
+          "testValue": "hidden"
+        }
+      }, {
+        "data": {
+          "id": "12-2",
+          "name": "Provision User Account",
+          "shapeType": "roundrectangle",
+          "borderColor": "#949393",
+          "weigth": 10,
+          "backgroundColor": "#949393",
+          "backgroundOpacity": "0",
+          "testValue": "hidden"
+        }
+      }]
+    }
+  }],
+  "edges": [{
+    "data": {
+      "source": "9",
+      "target": "10",
+      "curve": "bezier",
+      "controlPointDistances": [0.5],
+      "controlPointWeights": [0.5]
+    }
+  }, {
+    "data": {
+      "source": "10",
+      "target": "11",
+      "curve": "bezier",
+      "controlPointDistances": [0.5],
+      "controlPointWeights": [0.5]
+    }
+  }, {
+    "data": {
+      "source": "11",
+      "target": "12",
+      "curve": "bezier",
+      "controlPointDistances": [0.5],
+      "controlPointWeights": [0.5]
+    }
+  }]
+}
