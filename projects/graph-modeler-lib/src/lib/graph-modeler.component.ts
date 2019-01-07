@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  EventEmitter,
+  Input,
+  AfterViewInit,
+  OnDestroy,
+  Output
+} from '@angular/core';
 
 import { version } from './utilities/version';
 
@@ -19,8 +28,10 @@ import { GraphModelerSettings } from './graph-modeler.settings';
   `,
   styleUrls: ['./graph-modeler.component.css']
 })
-export class GraphModelerComponent implements OnInit, OnDestroy {
+export class GraphModelerComponent implements OnDestroy, AfterViewInit {
   versionString = version;
+
+  @ViewChild('cy') cyElement: ElementRef;
 
   dataValue: any;
   @Input()
@@ -68,8 +79,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy {
   xDistance = 0;
   nodeYPosition = 0;
 
-  ngOnInit() {
-    cytoscape.use(dagre); // register extension
+  ngAfterViewInit() {
     this.createCytoscape();
   }
 
@@ -84,8 +94,9 @@ export class GraphModelerComponent implements OnInit, OnDestroy {
 
   private createCytoscape() {
     this.openedNodes = [];
+    cytoscape.use(dagre); // register extension
     this.cy = cytoscape(
-      GraphModelerSettings.properties(document.getElementById('cy'), <cytoscape.ElementsDefinition>(
+      GraphModelerSettings.properties(this.cyElement.nativeElement, <cytoscape.ElementsDefinition>(
         GraphModelerHelper.getAsCytoscapeFormat(this.data)
       ))
     );
