@@ -119,7 +119,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleParentNode(isOpen: boolean, node: any) {
+  private toggleParentNode(isOpen: boolean, node: any) {
     const id = node.id();
 
     const nextNode = this.getNextNode(id);
@@ -154,7 +154,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy {
     );
   }
 
-  drawActions(node: any, nextNode: any /*, subNodes: any[]*/) {
+  private drawActions(node: any, nextNode: any /*, subNodes: any[]*/) {
     const items: any[] = [];
 
     const nodeXPosition = node.position('x');
@@ -203,7 +203,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy {
     this.cy.add(items);
   }
 
-  getNextNode(id: string): cytoscape.CollectionReturnValue {
+  private getNextNode(id: string): any {
     const nodeIndex = this.data.nodes.findIndex(node => node.data.id === id);
     if (nodeIndex > -1 && nodeIndex + 1 < this.data.nodes.length) {
       const nextNodeId = this.data.nodes[nodeIndex + 1].data.id;
