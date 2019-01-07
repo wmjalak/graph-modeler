@@ -8,6 +8,6 @@ export class JsonService {
   constructor(private http: HttpClient) { }
 
   public get(filename: string): Observable<any> {
-    return this.http.get('./assets/' + filename + '.json');
+    return this.http.get<any>('./assets/' + filename + '.json');
   }
 }

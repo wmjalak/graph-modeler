@@ -1,131 +1,94 @@
-{
-  "nodes": [{
-    "data": {
-      "id": "5",
-      "name": "Create",
-      "shapeType": "ellipse",
-      "borderColor": "#949393",
-      "weigth": 10,
-      "backgroundColor": "#949393",
-      "backgroundOpacity": "1",
-      "testValue": "visible",
-      "subNodes": []
-    }
-  }, {
-    "data": {
-      "id": "6",
-      "name": "Create Update Person",
-      "shapeType": "ellipse",
-      "borderColor": "#949393",
-      "weigth": 10,
-      "backgroundColor": "#949393",
-      "backgroundOpacity": "0",
-      "testValue": "visible",
-      "subNodes": [{
-        "data": {
-          "id": "6-0",
-          "name": "Move",
-          "shapeType": "roundrectangle",
-          "borderColor": "#949393",
-          "weigth": 10,
-          "backgroundColor": "#949393",
-          "backgroundOpacity": "0",
-          "testValue": "hidden"
-        }
-      }]
-    }
-  }, {
-    "data": {
-      "id": "7",
-      "name": "Provision User Accounts",
-      "shapeType": "ellipse",
-      "borderColor": "#949393",
-      "weigth": 10,
-      "backgroundColor": "#949393",
-      "backgroundOpacity": "0",
-      "testValue": "visible",
-      "subNodes": [{
-        "data": {
-          "id": "7-0",
-          "name": "Move",
-          "shapeType": "roundrectangle",
-          "borderColor": "#949393",
-          "weigth": 10,
-          "backgroundColor": "#949393",
-          "backgroundOpacity": "0",
-          "testValue": "hidden"
-        }
-      }]
-    }
-  }, {
-    "data": {
-      "id": "8",
-      "name": "Error",
-      "shapeType": "ellipse",
-      "borderColor": "#949393",
-      "weigth": 10,
-      "backgroundColor": "#949393",
-      "backgroundOpacity": "1",
-      "testValue": "visible",
-      "subNodes": [{
-        "data": {
-          "id": "8-0",
-          "name": "Provision User Account",
-          "shapeType": "roundrectangle",
-          "borderColor": "#949393",
-          "weigth": 10,
-          "backgroundColor": "#949393",
-          "backgroundOpacity": "0",
-          "testValue": "hidden"
-        }
-      }, {
-        "data": {
-          "id": "8-1",
-          "name": "Provision User Account",
-          "shapeType": "roundrectangle",
-          "borderColor": "#949393",
-          "weigth": 10,
-          "backgroundColor": "#949393",
-          "backgroundOpacity": "0",
-          "testValue": "hidden"
-        }
-      }, {
-        "data": {
-          "id": "8-2",
-          "name": "Provision User Account",
-          "shapeType": "roundrectangle",
-          "borderColor": "#949393",
-          "weigth": 10,
-          "backgroundColor": "#949393",
-          "backgroundOpacity": "0",
-          "testValue": "hidden"
-        }
-      }]
-    }
+[{
+  "id": 5,
+  "workflowInstanceId": 2,
+  "taskName": "create",
+  "eventName": "created",
+  "fromState": null,
+  "toState": "start",
+  "sessionId": null,
+  "actionsExecuted": [],
+  "startedTime": "2018-12-20T13:51:02.8806154",
+  "completedTime": "2018-12-20T13:51:02.8806162"
+}, {
+  "id": 6,
+  "workflowInstanceId": 2,
+  "taskName": null,
+  "eventName": null,
+  "fromState": "start",
+  "toState": "createUpdatePerson",
+  "sessionId": null,
+  "actionsExecuted": [{
+    "name": "move",
+    "stateName": "start",
+    "started": "2018-12-20T13:51:04.222731Z",
+    "completed": "2018-12-20T13:51:04.2301759Z",
+    "ctxChanges": null,
+    "eventRequest": "move",
+    "statusOK": true,
+    "exceptionMessage": null
   }],
-  "edges": [{
-    "data": {
-      "source": "5",
-      "target": "6",
-      "curve": "bezier",
-      "controlPointDistances": [0.5],
-      "controlPointWeights": [0.5]
-    }
+  "startedTime": "2018-12-20T13:51:04.2221653",
+  "completedTime": "2018-12-20T13:51:04.254246"
+}, {
+  "id": 7,
+  "workflowInstanceId": 2,
+  "taskName": null,
+  "eventName": null,
+  "fromState": "createUpdatePerson",
+  "toState": "provisionUserAccounts",
+  "sessionId": null,
+  "actionsExecuted": [{
+    "name": "move",
+    "stateName": "createUpdatePerson",
+    "started": "2018-12-20T13:51:06.2822174Z",
+    "completed": "2018-12-20T13:51:06.2875122Z",
+    "ctxChanges": null,
+    "eventRequest": "ok",
+    "statusOK": true,
+    "exceptionMessage": null
+  }],
+  "startedTime": "2018-12-20T13:51:06.2818312",
+  "completedTime": "2018-12-20T13:51:06.3064493"
+}, {
+  "id": 8,
+  "workflowInstanceId": 2,
+  "taskName": null,
+  "eventName": null,
+  "fromState": "provisionUserAccounts",
+  "toState": "error",
+  "sessionId": null,
+  "actionsExecuted": [{
+    "name": "provisionUserAccount",
+    "stateName": "provisionUserAccounts",
+    "started": "2018-12-20T13:51:08.3395116Z",
+    "completed": "2018-12-20T13:51:08.4108241Z",
+    "ctxChanges": {
+      "result": "Provision Request to Add IdM UserAccount completed"
+    },
+    "eventRequest": null,
+    "statusOK": true,
+    "exceptionMessage": null
   }, {
-    "data": {
-      "source": "6",
-      "target": "7",
-      "curve": "bezier",
-      "controlPointDistances": [0.5],
-      "controlPointWeights": [0.5]
-    }
+    "name": "provisionUserAccount",
+    "stateName": "provisionUserAccounts",
+    "started": "2018-12-20T13:51:08.4180589Z",
+    "completed": "2018-12-20T13:51:08.5696241Z",
+    "ctxChanges": {
+      "result": "Provision Request to Add AD UserAccount completed"
+    },
+    "eventRequest": null,
+    "statusOK": true,
+    "exceptionMessage": null
   }, {
-    "data": {
-      "source": "7",
-      "target": "8",
-      "curve": "bezier",
-      "controlPointDistances": [0.5],
-      "controlPointWeights": [0.5]
-    }
-  }]
-}
+    "name": "provisionUserAccount",
+    "stateName": "provisionUserAccounts",
+    "started": "2018-12-20T13:51:08.575583Z",
+    "completed": "2018-12-20T13:51:08.7802325Z",
+    "ctxChanges": null,
+    "eventRequest": null,
+    "statusOK": false,
+    "exceptionMessage": "Object reference not set to an instance of an object."
+  }],
+  "startedTime": "2018-12-20T13:51:08.3391043",
+  "completedTime": "2018-12-20T13:51:08.7968961"
+}]

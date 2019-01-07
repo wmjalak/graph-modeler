@@ -6,7 +6,7 @@ import { JsonService } from './json.service';
   selector: 'app-change-schema',
   template: `
     <select (change)="onSelectionChange($event)">
-      <option *ngFor="let example of examples; let i = index" [value]="example">{{
+      <option *ngFor="let example of examples" [value]="example">{{
         example
       }}</option>
     </select>
@@ -14,14 +14,14 @@ import { JsonService } from './json.service';
 })
 export class ChangeSchemaComponent implements OnInit {
   // tslint:disable-next-line:no-output-on-prefix
-  @Output() onSchemaSelected = new EventEmitter<any[]>();
+  @Output() onSchemaChanged = new EventEmitter<any>();
 
   examples: string[] = ['workflow_completed', 'workflow_error'];
 
   constructor(private jsonService: JsonService) {}
 
   ngOnInit() {
-    this.changeSelection(this.examples[0]);
+    this.changeSelection(this.examples[0]); // load the first one automatically
   }
 
   onSelectionChange(event: any) {
@@ -30,8 +30,7 @@ export class ChangeSchemaComponent implements OnInit {
 
   changeSelection(selectionValue: string) {
     this.jsonService.get(selectionValue).subscribe(result => {
-      this.onSchemaSelected.emit(result);
-      console.log('changeSelection', result);
+      this.onSchemaChanged.emit(result);
     });
   }
 }

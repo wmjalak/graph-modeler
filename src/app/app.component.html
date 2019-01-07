@@ -1,9 +1,30 @@
-<app-change-schema (onSchemaSelected)="onSchemaSelected($event)"></app-change-schema>
-<div *ngIf="data">
-<vn-graph-modeler class="modeler-1" [data]="data"></vn-graph-modeler>
-<!--
-<p>
-  <vn-graph-modeler class="modeler-2" [data]="data"></vn-graph-modeler>
-</p>
--->
+<app-change-schema (onSchemaChanged)="onSchemaChanged($event)"></app-change-schema>
+
+<table>
+  <tr>
+    <th>
+      Raw JSON <button (click)="onRefreshRawJsonClicked()">Refresh</button>
+    </th>
+    <th>
+      Modeler JSON <button (click)="onRefreshModelerJsonClicked()">Refresh</button>
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <textarea #rawJsonElement rows="10" cols="50">
+          </textarea>
+    </td>
+    <td>
+      <textarea #adjacencyListElement rows="10" cols="50">
+          </textarea>
+    </td>
+  </tr>
+</table>
+
+<div *ngIf="modelerData">
+  <vn-graph-modeler class="modeler-1" [data]="modelerData" (selected)="onModelerEvent($event)"></vn-graph-modeler>
+</div>
+
+<div *ngIf="modelerEvent">
+  Selected {{ modelerEvent }}
 </div>
