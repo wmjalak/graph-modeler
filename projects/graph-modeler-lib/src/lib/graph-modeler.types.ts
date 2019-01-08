@@ -16,7 +16,9 @@ export class GMNode {
     name: string;
     borderColor?: string;
     backgroundColor?: string;
+    icon?: string;
     model?: any;
+    expanded?: boolean;
     subNodes?: GMNode[];
   };
 }

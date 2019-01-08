@@ -115,7 +115,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         },
         {
-          duration: 500
+          duration: 400
         }
       );
     }
@@ -136,20 +136,17 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.nodeYPosition = nodes[1].position('y');
     }
 
+    nodes.forEach((node: any, index: number) => {
+      const expanded = node.data().expanded;
+      if (expanded && expanded === true && index > 0) {
+        this.toggleNode(nodes[index - 1]);
+      }
+    });
+
     this.cy.on('tap', 'node', (evt: any) => {
       const node = evt.target;
-      // console.log(node);
-      const id = node.id();
       this.selected.emit(node.data());
-
-      // toggle subnodes for ID
-      const isOpen = GraphModelerHelper.includes(this.openedNodes, id);
-      if (isOpen) {
-        this.openedNodes = this.openedNodes.filter(item => item !== id);
-      } else {
-        this.openedNodes.push(id);
-      }
-      this.toggleParentNode(isOpen, node);
+      this.toggleNode(node);
     });
   }
 
@@ -159,8 +156,15 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private toggleParentNode(isOpen: boolean, node: any) {
+  private toggleNode(node: any) {
     const id = node.id();
+
+    const isOpen = GraphModelerHelper.includes(this.openedNodes, id);
+    if (isOpen) {
+      this.openedNodes = this.openedNodes.filter(item => item !== id);
+    } else {
+      this.openedNodes.push(id);
+    }
 
     const nextNode = this.getNextNode(id);
 
