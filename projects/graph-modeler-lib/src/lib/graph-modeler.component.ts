@@ -6,10 +6,13 @@ import {
   Input,
   AfterViewInit,
   OnDestroy,
+  OnInit,
   Output
 } from '@angular/core';
 
 import { version } from './utilities/version';
+import { fromEvent, Observable, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import * as cytoscape_ from 'cytoscape';
 const cytoscape = cytoscape_;
@@ -28,10 +31,13 @@ import { GraphModelerSettings } from './graph-modeler.settings';
   `,
   styleUrls: ['./graph-modeler.component.css']
 })
-export class GraphModelerComponent implements OnDestroy, AfterViewInit {
+export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
   versionString = version;
 
   @ViewChild('cy') cyElement: ElementRef;
+
+  resizeObservable$: Observable<Event>;
+  resizeSubscription$: Subscription;
 
   dataValue: any;
   @Input()
@@ -79,17 +85,40 @@ export class GraphModelerComponent implements OnDestroy, AfterViewInit {
   xDistance = 0;
   nodeYPosition = 0;
 
+  ngOnInit() {
+    this.resizeObservable$ = fromEvent(window, 'resize').pipe(debounceTime(200));
+    this.resizeSubscription$ = this.resizeObservable$.subscribe(evt => {
+      this.fitNodes();
+    });
+  }
+
   ngAfterViewInit() {
     this.createCytoscape();
   }
 
   ngOnDestroy() {
+    this.resizeSubscription$.unsubscribe();
     this.destroyCytoscape();
   }
 
   refresh() {
     this.destroyCytoscape();
     this.createCytoscape();
+  }
+
+  private fitNodes() {
+    if (this.cy) {
+      this.cy.animate(
+        {
+          fit: {
+            eles: this.cy.nodes()
+          }
+        },
+        {
+          duration: 500
+        }
+      );
+    }
   }
 
   private createCytoscape() {
@@ -152,17 +181,7 @@ export class GraphModelerComponent implements OnDestroy, AfterViewInit {
         GraphModelerHelper.handleStraightEdges(this.cy, false, node, nextNode);
       }
     }
-
-    this.cy.animate(
-      {
-        fit: {
-          eles: this.cy.nodes()
-        }
-      },
-      {
-        duration: 500
-      }
-    );
+    this.fitNodes();
   }
 
   private drawActions(node: any, nextNode: any /*, subNodes: any[]*/) {
