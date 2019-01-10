@@ -7,12 +7,12 @@ import { GraphModelerModule } from 'graph-modeler';
 
 import { AppComponent } from './app.component';
 import { JsonService } from './json.service';
-import { ChangeSchemaComponent } from './change-schema.component';
+import { SelectionComponent } from './selection.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChangeSchemaComponent
+    SelectionComponent
   ],
   imports: [
     BrowserModule,

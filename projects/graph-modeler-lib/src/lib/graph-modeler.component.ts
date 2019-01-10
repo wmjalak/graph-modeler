@@ -33,6 +33,7 @@ import { GraphModelerSettings } from './graph-modeler.settings';
 })
 export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
   versionString = version;
+  AUTO_PANNING = true;
 
   @ViewChild('cy') cyElement: ElementRef;
 
@@ -84,6 +85,8 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
   openedNodes: string[] = [];
   xDistance = 0;
   nodeYPosition = 0;
+  selectedNode: any;
+  selectedNodeAnimation: any;
 
   ngOnInit() {
     this.resizeObservable$ = fromEvent(window, 'resize').pipe(debounceTime(200));
@@ -106,12 +109,12 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.createCytoscape();
   }
 
-  private fitNodes() {
+  private fitNodes(nodes: any = this.cy.nodes()) {
     if (this.cy) {
       this.cy.animate(
         {
           fit: {
-            eles: this.cy.nodes()
+            eles: nodes
           }
         },
         {
@@ -130,6 +133,10 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
       ))
     );
 
+    this.cy.ready(() => {
+      // console.log('ready');
+    });
+
     const nodes = this.cy.nodes();
     if (nodes && nodes.length > 2) {
       this.xDistance = nodes[1].position('x') - nodes[0].position('x');
@@ -143,10 +150,58 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.cy.on('tap', 'node', (evt: any) => {
-      const node = evt.target;
-      this.selected.emit(node.data());
-      this.toggleNode(node);
+    this.cy.on('tap', (evt: any) => {
+      const group = evt.target.group ? evt.target.group() : undefined;
+
+      if (this.selectedNodeAnimation) {
+        this.selectedNodeAnimation.stop();
+      }
+
+      if (group === 'nodes') {
+        const node = evt.target;
+        this.selected.emit(node.data());
+        if (this.AUTO_PANNING) {
+          this.fitNodes(node);
+        }
+        /*
+        const selectedNode = this.cy.getElementById(node.id());
+        this.selectedNodeAnimation = selectedNode.animation({
+          style: {
+            'background-blacken': 0.2
+          },
+          duration: 1000
+        });
+        const loopAnimation = (n: any) => {
+          n.play()
+            .promise('completed').then(function () { // on next completed
+              console.log('complete');
+              loopAnimation(n);
+            });
+
+        };
+        loopAnimation(this.selectedNodeAnimation);
+*/
+      } else if (group === 'edges') {
+        const edge = evt.target;
+        const sourceParentId = edge.source().data().parentId;
+
+        if (sourceParentId === undefined) {
+          // this is the first subnode edge (source has no parent)
+          this.toggleNode(edge.source());
+        } else {
+          const targetParentId = edge.target().data().parentId;
+          if (targetParentId === undefined) {
+            // this is the LAST subnode edge (target has no parent)
+            const currentTopLevelNodeNode = this.getTopLevelNodeById(sourceParentId, -1);
+            this.toggleNode(currentTopLevelNodeNode);
+          }
+        }
+      } else {
+        this.selected.emit(undefined);
+        if (this.AUTO_PANNING) {
+          this.fitNodes();
+        }
+      }
     });
   }
 
@@ -158,6 +213,10 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private toggleNode(node: any) {
     const id = node.id();
+    const nextNode = this.getTopLevelNodeById(id, 1);
+    if (nextNode === undefined) {
+      return;
+    }
 
     const isOpen = GraphModelerHelper.includes(this.openedNodes, id);
     if (isOpen) {
@@ -165,8 +224,6 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.openedNodes.push(id);
     }
-
-    const nextNode = this.getNextNode(id);
 
     // GraphModelerHelper.shiftBaseNodes(this.cy, node, nextNode, !isOpen, this.xDistance);
 
@@ -179,16 +236,14 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
       GraphModelerHelper.handleStraightEdges(this.cy, true, node, nextNode);
       this.drawActions(node, nextNode);
     } else if (isOpen) {
-      if (nextNode) {
-        GraphModelerHelper.removeActionNodes(this.cy, node, nextNode);
-        GraphModelerHelper.shiftBaseNodes(this.cy, node, nextNode, !isOpen, this.xDistance);
-        GraphModelerHelper.handleStraightEdges(this.cy, false, node, nextNode);
-      }
+      GraphModelerHelper.removeActionNodes(this.cy, node, nextNode);
+      GraphModelerHelper.shiftBaseNodes(this.cy, node, nextNode, !isOpen, this.xDistance);
+      GraphModelerHelper.handleStraightEdges(this.cy, false, node, nextNode);
     }
     this.fitNodes();
   }
 
-  private drawActions(node: any, nextNode: any /*, subNodes: any[]*/) {
+  private drawActions(node: any, nextNode: any) {
     const items: any[] = [];
 
     const nodeXPosition = node.position('x');
@@ -197,9 +252,8 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const subNodes = [...nextNode.data().subNodes];
 
-    const edgeSources: string[] = [];
-    edgeSources.push(node.id());
-
+    const edgeSources: any[] = [];
+    edgeSources.push(node.data());
     subNodes.forEach((subNode, index) => {
       const data = { ...subNode.data };
       data.parentId = nextNodeId;
@@ -212,7 +266,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
-      edgeSources.push(subNode.data.id);
+      edgeSources.push(data);
 
       items.push(
         GraphModelerHelper.getEdge(
@@ -228,7 +282,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
       items.push(
         GraphModelerHelper.getEdge(
           edgeSources[edgeSources.length - 1],
-          nextNode.id(),
+          nextNode.data(),
           ModelerEdgeCurveType.CURVE_UP
         )
       );
@@ -237,11 +291,15 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cy.add(items);
   }
 
-  private getNextNode(id: string): any {
-    const nodeIndex = this.data.nodes.findIndex(node => node.data.id === id);
-    if (nodeIndex > -1 && nodeIndex + 1 < this.data.nodes.length) {
-      const nextNodeId = this.data.nodes[nodeIndex + 1].data.id;
-      return this.cy.getElementById(nextNodeId);
+  private getTopLevelNodeById(id: string, shiftIndex: number = 0): any {
+    const nodeIndex = this.data.nodes.findIndex((node: any) => node.data.id === id);
+    return this.getNodeByIndex(this.cy, this.data, nodeIndex + shiftIndex);
+  }
+
+  private getNodeByIndex(cytoscapeInstance: any, data: any, index: number): any {
+    if (index > -1 && index < data.nodes.length) {
+      const nodeId = data.nodes[index].data.id;
+      return cytoscapeInstance.getElementById(nodeId);
     }
     return undefined;
   }

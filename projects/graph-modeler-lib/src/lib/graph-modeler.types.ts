@@ -14,6 +14,9 @@ export class GMNode {
   data: {
     id: string;
     name: string;
+    color?: string;
+    baseColor?: string;
+    iconColor?: string;
     borderColor?: string;
     backgroundColor?: string;
     icon?: string;

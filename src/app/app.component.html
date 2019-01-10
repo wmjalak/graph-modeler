@@ -1,20 +1,34 @@
-<app-change-schema (onSchemaChanged)="onSchemaChanged($event)"></app-change-schema>
-
-<table>
-  <tr>
-    <th>
-      Raw JSON <button (click)="onRefreshRawJsonClicked()">Refresh</button>
-    </th>
-    <th>
-      Modeler JSON <button (click)="onRefreshModelerJsonClicked()">Refresh</button>
-    </th>
-  </tr>
+<table cellpadding="1">
   <tr>
     <td>
+      <b>Raw JSON</b>
+    </td>
+    <td>
+      <app-selection [selectionArray]="rawJsonSelection" (onSchemaChanged)="onSchemaChanged($event)"></app-selection>
+    </td>
+    <td class="align-right">
+      <button (click)="onRefreshRawJsonClicked()">Refresh</button>
+    </td>
+    <td>
+      <b>Adapter</b>
+    </td>
+    <td>
+      <b>Modeler JSON</b>
+    </td>
+    <td class="align-right">
+      <button (click)="onRefreshModelerJsonClicked()">Refresh</button>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3">
       <textarea #rawJsonElement rows="10" cols="50">
           </textarea>
     </td>
     <td>
+      <app-selection [selectionArray]="adapterSelection" (onSchemaChanged)="onAdapterChanged($event)"></app-selection>
+      ->
+    </td>
+    <td colspan="2">
       <textarea #adjacencyListElement rows="10" cols="50">
           </textarea>
     </td>

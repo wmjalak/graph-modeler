@@ -7,6 +7,17 @@ export enum ModelerEdgeCurveType {
   CURVE_UP
 }
 
+const CurveTypeDistances = {
+  STRAIGHT: [0.5],
+  CURVE_DOWN: [-9, 7],
+  CURVE_UP: [7, -9]
+};
+
+const CurveTypeWeights = {
+  STRAIGHT: [0.5],
+  OTHER: [0.25, 0.75]
+};
+
 export class GraphModelerHelper {
   static includes(stringArray: string[], value: string): boolean {
     return stringArray && stringArray.length > 0
@@ -36,25 +47,36 @@ export class GraphModelerHelper {
       );
     } else {
       cytoscapeInstance.add(
-        GraphModelerHelper.getEdge(node.id(), nextNode.id(), ModelerEdgeCurveType.STRAIGHT)
+        GraphModelerHelper.getEdge(node.data(), nextNode.data(), ModelerEdgeCurveType.STRAIGHT)
       );
     }
   }
 
-  static getEdge(source: string, target: string, curveType: ModelerEdgeCurveType): EdgeDefinition {
+  static getEdge(source: any, target: any, curveType: ModelerEdgeCurveType): EdgeDefinition {
+    const hasSubNodes = target.subNodes && target.subNodes.length > 0;
     return {
       group: 'edges',
       data: {
-        source: source,
-        target: target,
+        source: source.id,
+        target: target.id,
+        color: source.baseColor,
         curve: curveType === ModelerEdgeCurveType.STRAIGHT ? 'bezier' : 'unbundled-bezier',
         controlPointDistances:
           curveType === ModelerEdgeCurveType.STRAIGHT
-            ? [0.5]
+            ? CurveTypeDistances.STRAIGHT
             : curveType === ModelerEdgeCurveType.CURVE_DOWN
-            ? [-5, 5]
-            : [5, -5],
-        controlPointWeights: curveType === ModelerEdgeCurveType.STRAIGHT ? [0.5] : [0.25, 0.75]
+            ? CurveTypeDistances.CURVE_DOWN
+            : CurveTypeDistances.CURVE_UP,
+        controlPointWeights:
+          curveType === ModelerEdgeCurveType.STRAIGHT
+            ? CurveTypeWeights.STRAIGHT
+            : CurveTypeWeights.OTHER,
+        level:
+          curveType === ModelerEdgeCurveType.CURVE_DOWN
+            ? 'curve-down'
+            : hasSubNodes && curveType === ModelerEdgeCurveType.STRAIGHT
+            ? 'top'
+            : ''
       }
     };
   }
@@ -119,15 +141,13 @@ export class GraphModelerHelper {
       const nodeCount = result.nodes.length;
 
       if (nodeCount > 1) {
-        result.edges.push({
-          data: {
-            source: result.nodes[nodeCount - 2].data.id,
-            target: result.nodes[nodeCount - 1].data.id,
-            curve: 'bezier',
-            controlPointDistances: [0.5],
-            controlPointWeights: [0.5]
-          }
-        });
+        result.edges.push(
+          this.getEdge(
+            result.nodes[nodeCount - 2].data,
+            result.nodes[nodeCount - 1].data,
+            ModelerEdgeCurveType.STRAIGHT
+          )
+        );
       }
     });
 
