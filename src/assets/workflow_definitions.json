@@ -1,0 +1,555 @@
+[{
+    "id": 1,
+    "name": "DefaultPersonWorkflow",
+    "initialContext": {},
+    "type": 1,
+    "stateDiagram": {
+      "states": [{
+          "name": "start",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "move",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "trigEvent",
+            "parameters": {
+              "eventName": "move"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "move",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "createUpdatePerson",
+            "completed": false
+          }]
+        },
+        {
+          "name": "createUpdatePerson",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "move",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "trigEvent",
+            "parameters": {
+              "eventName": "ok"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "ok",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "error",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "provisionUserAccounts",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "provision",
+            "applicationAction": true,
+            "actionType": 0,
+            "definition": "provision",
+            "parameters": null,
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "stopped",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "provisioned",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "ipakReply",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": [{
+            "name": "ok",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "completed",
+            "completed": false
+          }]
+        },
+        {
+          "name": "completed",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": []
+        }
+      ]
+    },
+    "modified": "0001-01-01T00:00:00"
+  },
+  {
+    "id": 2,
+    "name": "DefaultRightWorkflow",
+    "initialContext": {},
+    "type": 1,
+    "stateDiagram": {
+      "states": [{
+          "name": "start",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "move",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "trigEvent",
+            "parameters": {
+              "eventName": "ok"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "ok",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "error",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "provisionUserAccounts",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "provision",
+            "applicationAction": true,
+            "actionType": 0,
+            "definition": "provision",
+            "parameters": null,
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "stopped",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "provisioned",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "ipakReply",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": [{
+            "name": "ok",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "completed",
+            "completed": false
+          }]
+        },
+        {
+          "name": "completed",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": []
+        }
+      ]
+    },
+    "modified": "0001-01-01T00:00:00"
+  },
+  {
+    "id": 3,
+    "name": "IpakSyncWf",
+    "initialContext": {},
+    "type": 1,
+    "stateDiagram": {
+      "states": [{
+          "name": "start",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "move",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "trigEvent",
+            "parameters": {
+              "eventName": "move"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "move",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "getIpakPerson",
+            "completed": false
+          }]
+        },
+        {
+          "name": "getIpakPerson",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "GetIpakPerson",
+            "applicationAction": true,
+            "actionType": 1,
+            "definition": "api-stsc/workflowaction/getIpakPerson",
+            "parameters": null,
+            "retryPolicy": {
+              "maxRetryCount": 10,
+              "retryIntervalSecs": 0
+            },
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "ok",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "createUpdatePerson",
+            "completed": false
+          }]
+        },
+        {
+          "name": "createUpdatePerson",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "ipakCreateUpdatePerson",
+            "applicationAction": true,
+            "actionType": 1,
+            "definition": "api-stsc/workflowaction/createPerson",
+            "parameters": null,
+            "retryPolicy": {
+              "maxRetryCount": 10,
+              "retryIntervalSecs": 0
+            },
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "ok",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "error",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "provisionUserAccounts",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "provision",
+            "applicationAction": true,
+            "actionType": 0,
+            "definition": "provision",
+            "parameters": null,
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "stopped",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "provisioned",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "ipakReply",
+          "entryActions": [{
+            "name": "ipakImportCompleted",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "TrigEvent",
+            "parameters": {
+              "EventName": "ok"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "stateActions": [],
+          "exitActions": [],
+          "events": [{
+            "name": "ok",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "completed",
+            "completed": false
+          }]
+        },
+        {
+          "name": "completed",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": []
+        }
+      ]
+    },
+    "modified": "0001-01-01T00:00:00"
+  },
+  {
+    "id": 4,
+    "name": "IpakImportWorkflow",
+    "initialContext": {},
+    "type": 2,
+    "stateDiagram": {
+      "states": [{
+          "name": "start",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "move",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "trigEvent",
+            "parameters": {
+              "eventName": "move"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "move",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "createUpdatePerson",
+            "completed": false
+          }]
+        },
+        {
+          "name": "createUpdatePerson",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "ipakCreateUpdatePerson",
+            "applicationAction": true,
+            "actionType": 1,
+            "definition": "api-stsc/workflowaction/createPerson",
+            "parameters": null,
+            "retryPolicy": {
+              "maxRetryCount": 10,
+              "retryIntervalSecs": 0
+            },
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+              "name": "ok",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "provisionUserAccounts",
+              "completed": false
+            },
+            {
+              "name": "error",
+              "taskName": "",
+              "taskType": "system",
+              "triggerConditionCS": null,
+              "nextState": "completed",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "name": "provisionUserAccounts",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "provision",
+            "applicationAction": true,
+            "actionType": 0,
+            "definition": "provision",
+            "parameters": null,
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "provisioned",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "completed",
+            "completed": false
+          }]
+        },
+        {
+          "name": "ipakReply",
+          "entryActions": [{
+            "name": "ipakImportCompleted",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": "TrigEvent",
+            "parameters": {
+              "EventName": "ok"
+            },
+            "retryPolicy": null,
+            "async": false
+          }],
+          "stateActions": [],
+          "exitActions": [],
+          "events": [{
+            "name": "ok",
+            "taskName": "",
+            "taskType": "system",
+            "triggerConditionCS": null,
+            "nextState": "completed",
+            "completed": false
+          }]
+        },
+        {
+          "name": "completed",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": []
+        }
+      ]
+    },
+    "modified": "0001-01-01T00:00:00"
+  },
+  {
+    "id": 5,
+    "name": "IpakOrderWorkflow",
+    "initialContext": {
+      "workflowStuff": "Order processing starts",
+      "count": 0
+    },
+    "type": 1,
+    "stateDiagram": {
+      "states": [{
+          "name": "start",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "autocontinue",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": null,
+            "parameters": null,
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "continue",
+            "taskName": null,
+            "taskType": null,
+            "triggerConditionCS": null,
+            "nextState": "provisioning",
+            "completed": false
+          }]
+        },
+        {
+          "name": "provisioning",
+          "entryActions": [],
+          "stateActions": [{
+            "name": "test",
+            "applicationAction": false,
+            "actionType": 0,
+            "definition": null,
+            "parameters": null,
+            "retryPolicy": null,
+            "async": false
+          }],
+          "exitActions": [],
+          "events": [{
+            "name": "provisioned",
+            "taskName": "Provision",
+            "taskType": "User",
+            "triggerConditionCS": null,
+            "nextState": "completed",
+            "completed": false
+          }]
+        },
+        {
+          "name": "completed",
+          "entryActions": [],
+          "stateActions": [],
+          "exitActions": [],
+          "events": []
+        }
+      ]
+    },
+    "modified": "0001-01-01T00:00:00"
+  }
+]

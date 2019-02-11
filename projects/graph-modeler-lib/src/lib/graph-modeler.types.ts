@@ -22,6 +22,7 @@ export class GMNode {
     icon?: string;
     model?: any;
     expanded?: boolean;
+    executed?: boolean;
     subNodes?: GMNode[];
   };
 }

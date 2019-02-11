@@ -159,7 +159,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if (group === 'nodes') {
         const node = evt.target;
-        this.selected.emit(node.data());
+        this.selected.emit(node.data().model);
         if (this.AUTO_PANNING) {
           this.fitNodes(node);
         }

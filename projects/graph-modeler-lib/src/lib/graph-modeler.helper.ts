@@ -76,7 +76,8 @@ export class GraphModelerHelper {
             ? 'curve-down'
             : hasSubNodes && curveType === ModelerEdgeCurveType.STRAIGHT
             ? 'top'
-            : ''
+              : '',
+        lineStyle: (!source.executed && !target.executed) ? 'dashed' : 'solid'
       }
     };
   }

@@ -1,5 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { forkJoin, Observable } from 'rxjs';
 import { GMTimelineModel } from 'graph-modeler';
 import { WorkFlowHistoryAdapter } from './workflowhistory-adapter';
 import { JsonService } from './json.service';
@@ -9,51 +9,85 @@ import { JsonService } from './json.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   data: any;
   modelerEvent: any;
   jsonVisible = false;
   modelerData: GMTimelineModel;
-  rawJsonSelection = ['workflow_completed', 'workflow_error'];
+  definitionSelection = ['definition_person'];
+  workflowSelection = ['workflow_completed', 'workflow_error', 'workflow_empty'];
   adapterSelection = ['workflowhistory'];
-  @ViewChild('adjacencyListElement') adjacencyListElement: ElementRef;
-  @ViewChild('rawJsonElement') rawJsonElement: ElementRef;
+  workFlowInstances: any[];
+  @ViewChild('definitionJsonElement') definitionJsonElement: ElementRef;
+  @ViewChild('workflowJsonElement') workflowJsonElement: ElementRef;
+  @ViewChild('modelerJsonElement') modelerJsonElement: ElementRef;
 
   constructor(private jsonService: JsonService) {}
 
-  onSchemaChanged(selectedValue: any) {
-    this.jsonService.get(selectedValue).subscribe(result => {
-      this.rawJsonElement.nativeElement.value = JSON.stringify(result, undefined, 2);
-      this.refreshDataFromRawJsonElement();
-      this.refreshDataFromAdjancencyList();
+  ngOnInit() {
+    forkJoin([
+      this.jsonService.get(this.definitionSelection[0]),
+      this.jsonService.get(this.workflowSelection[0])
+    ]).subscribe(result => {
+      this.setDefinitionJsonElement(result[0]);
+      this.setWorkflowJsonElement(result[1]);
+      this.buildModeler();
     });
   }
 
-  onRefreshRawJsonClicked() {
-    this.refreshDataFromRawJsonElement();
-    this.refreshDataFromAdjancencyList();
+  onDefinitionChanged(selectedValue: any) {
+    this.jsonService.get(selectedValue).subscribe(result => {
+      this.setDefinitionJsonElement(result);
+      this.buildModeler();
+    });
   }
 
-  onRefreshModelerJsonClicked() {
-    this.refreshDataFromAdjancencyList();
+  onWorkflowChanged(selectedValue: any) {
+    this.jsonService.get(selectedValue).subscribe(result => {
+      this.setWorkflowJsonElement(result);
+      this.buildModeler();
+    });
   }
 
-  refreshDataFromRawJsonElement() {
-    const parseResult = WorkFlowHistoryAdapter.parse(
-      JSON.parse(this.rawJsonElement.nativeElement.value)
-    );
-    this.adjacencyListElement.nativeElement.value = JSON.stringify(parseResult, undefined, 2);
+  onAdapterChanged(selectedValue: any) {}
+
+  setDefinitionJsonElement(workflowJson: any) {
+    this.definitionJsonElement.nativeElement.value = JSON.stringify(workflowJson, undefined, 2);
   }
 
-  refreshDataFromAdjancencyList() {
-    this.modelerData = new GMTimelineModel(
-      JSON.parse(this.adjacencyListElement.nativeElement.value)
-    );
+  getDefinitionJsonElement(): any {
+    return JSON.parse(this.definitionJsonElement.nativeElement.value);
+  }
+
+  setWorkflowJsonElement(workflowJson: any) {
+    this.workflowJsonElement.nativeElement.value = JSON.stringify(workflowJson, undefined, 2);
+  }
+
+  getWorkflowJsonElement(): any {
+    return JSON.parse(this.workflowJsonElement.nativeElement.value);
+  }
+
+  setModelerJsonElement(modelerJson: any) {
+    this.modelerJsonElement.nativeElement.value = JSON.stringify(modelerJson, undefined, 2);
+  }
+
+  getModelerJsonElement(): any {
+    return JSON.parse(this.modelerJsonElement.nativeElement.value);
+  }
+
+  buildModeler() {
+    const definition = this.getDefinitionJsonElement();
+    const workflow = this.getWorkflowJsonElement();
+    const parseResult = WorkFlowHistoryAdapter.parse(workflow, definition);
+    this.setModelerJsonElement(parseResult);
+    this.modelerData = new GMTimelineModel(this.getModelerJsonElement());
+  }
+
+  refreshModelerData() {
+    this.modelerData = new GMTimelineModel(this.getModelerJsonElement());
   }
 
   onModelerEvent(event: any) {
     this.modelerEvent = JSON.stringify(event);
   }
-
-  onAdapterChanged(selectedValue: any) {}
 }

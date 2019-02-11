@@ -1,10 +1,10 @@
 import { GMTimelineModel, GMNode } from 'graph-modeler';
 
 export class WorkFlowHistoryAdapter {
-  static parse(histories: any[]): GMTimelineModel {
+  static parse(workflowArray: any[], workflowDefinition: any): GMTimelineModel {
     const model = new GMTimelineModel();
 
-    if (histories instanceof Array) {
+    if (workflowArray instanceof Array) {
       const defaultBackgroundColor = '#949393';
       const defaultBorderColor = '#949393';
       const defaultBaseColor = '#949393';
@@ -13,78 +13,95 @@ export class WorkFlowHistoryAdapter {
       const greenBackgroundColor = '#8CC04F';
       const redBackgroundColor = '#EE4C53';
 
-      histories.forEach((historyItem: any, historyItemIndex: number) => {
+      let subNodeFailure = false;
+      let workFlowHasExecutedActions = false;
+
+      workflowDefinition.stateDiagram.states.forEach((workflowState: any, index: number) => {
         const subNodes: GMNode[] = [];
+        const name = workflowState['name'];
+        const isCompleted = name === 'completed';
 
-        const actionsExecuted = historyItem['actionsExecuted'];
-        const historyItemId = historyItem['id'];
-        let subNodeFailure = false;
+        let stateHasExecutedActions = false;
 
-        if (actionsExecuted && actionsExecuted.length > 0) {
-          actionsExecuted.forEach((actionExecuted: any, actionsExecutedIndex: number) => {
-            const ctxChanges = actionExecuted['ctxChanges'];
-            const title =
-              ctxChanges && ctxChanges['result'] !== undefined
-                ? ctxChanges['result']
-                : actionExecuted['exceptionMessage']
-                ? actionExecuted['exceptionMessage']
-                : actionExecuted['eventRequest']
-                ? this.camelCaseToTitle(actionExecuted['eventRequest'])
-                : this.camelCaseToTitle(actionExecuted['name']);
+        const workflowItems = workflowArray.filter(
+          (workflowItem: any) => workflowItem.fromState === workflowState.name
+        );
 
-            const actionSuccessful =
-              actionExecuted['statusOK'] !== undefined ? actionExecuted['statusOK'] : false;
-            const actionFailure =
-              actionExecuted['statusOK'] !== undefined
-                ? actionExecuted['statusOK'] === false
-                : false;
-            if (actionFailure) {
-              subNodeFailure = true;
-            }
+        if (workflowItems && workflowItems.length > 0) {
+          workflowItems.forEach((workflowItem: any) => {
+            workflowItem.actionsExecuted.forEach((actionExecuted: any, actionIndex: number) => {
+              const ctxChanges = actionExecuted['ctxChanges'];
+              const title =
+                ctxChanges && ctxChanges['result'] !== undefined
+                  ? ctxChanges['result']
+                  : actionExecuted['exceptionMessage']
+                  ? actionExecuted['exceptionMessage']
+                  : actionExecuted['eventRequest']
+                  ? this.camelCaseToTitle(actionExecuted['eventRequest'])
+                  : this.camelCaseToTitle(actionExecuted['name']);
+              const actionSuccessful =
+                actionExecuted['statusOK'] !== undefined
+                  ? actionExecuted['statusOK'] === true
+                  : false;
 
-            subNodes.push(
-              new GMNode({
-                data: {
-                  id: historyItemId + '-' + actionsExecutedIndex,
-                  name: title,
-                  color: defaultColor,
-                  baseColor: defaultBaseColor,
-                  borderColor: actionFailure ? redBackgroundColor : defaultBorderColor,
-                  backgroundColor: actionFailure ? redBackgroundColor : undefined,
-                  iconColor: actionFailure ? 'white' : defaultIconColor,
-                  icon: actionSuccessful ? 'check' : actionFailure ? 'close' : undefined,
-                  model: {
-                    eventRequest: actionExecuted['eventRequest'],
-                    started: actionExecuted['started'],
-                    completed: actionExecuted['completed']
+              stateHasExecutedActions = true;
+
+              if (!actionSuccessful) {
+                subNodeFailure = true;
+              }
+              subNodes.push(
+                new GMNode({
+                  data: {
+                    id: workflowItem.id + '-' + actionIndex,
+                    name: title,
+                    color: defaultColor,
+                    baseColor: defaultBaseColor,
+                    borderColor: actionSuccessful ? defaultBorderColor : redBackgroundColor,
+                    backgroundColor: actionSuccessful ? undefined : redBackgroundColor,
+                    iconColor: actionSuccessful ? defaultIconColor : 'white',
+                    icon: actionSuccessful ? 'check' : 'close',
+                    executed: !subNodeFailure,
+                    model: {
+                      actionExecuted: actionExecuted,
+                      workflowItem: workflowItem
+                    }
                   }
-                }
-              })
-            );
+                })
+              );
+            });
           });
         }
 
-        const name = historyItem['taskName'] || historyItem['toState'];
-        const isCompleted = name === 'completed';
-        const backgroundColor = isCompleted ? greenBackgroundColor : defaultBackgroundColor;
+        if (stateHasExecutedActions) {
+          workFlowHasExecutedActions = true;
+        }
 
         model.nodes.push(
           new GMNode({
             data: {
-              id: String(historyItemId),
-              name: this.camelCaseToTitle(name),
+              id: String(index),
+              name: this.camelCaseToTitle(workflowState['name']),
               color: defaultColor,
               baseColor: defaultBaseColor,
-              borderColor: backgroundColor,
+              borderColor:
+                isCompleted && !subNodeFailure ? greenBackgroundColor : defaultBackgroundColor,
               backgroundColor:
-                historyItemIndex === 0 || historyItemIndex === histories.length - 1
-                  ? backgroundColor
+                isCompleted && !subNodeFailure
+                  ? greenBackgroundColor
+                  : index === 0 || isCompleted
+                  ? defaultBackgroundColor
                   : undefined,
               iconColor: isCompleted ? 'white' : defaultIconColor,
-              icon: !subNodeFailure && historyItemIndex !== 0 ? 'check' : undefined,
+              icon:
+                (!subNodeFailure && stateHasExecutedActions) ||
+                (isCompleted && !subNodeFailure && workFlowHasExecutedActions)
+                  ? 'check'
+                  : undefined,
               expanded: subNodeFailure,
+              executed: !subNodeFailure,
               model: {
-                workflowInstanceId: historyItem['workflowInstanceId']
+                workflowItemDefinition: workflowState,
+                workflowItems: workflowItems
               },
               subNodes: subNodes
             }

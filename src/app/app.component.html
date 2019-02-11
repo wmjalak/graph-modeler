@@ -1,35 +1,56 @@
 <table cellpadding="1">
   <tr>
+
+    <!-- Definition JSON -->
     <td>
-      <b>Raw JSON</b>
-    </td>
-    <td>
-      <app-selection [selectionArray]="rawJsonSelection" (onSchemaChanged)="onSchemaChanged($event)"></app-selection>
+      <b>Definition JSON</b>
     </td>
     <td class="align-right">
-      <button (click)="onRefreshRawJsonClicked()">Refresh</button>
+      <app-selection [selectionArray]="definitionSelection" (onChanged)="onDefinitionChanged($event)"></app-selection>
     </td>
+
+    <!-- Workflow JSON -->
+    <td>
+      <b>Workflow JSON</b>
+    </td>
+    <td class="align-right">
+      <app-selection [selectionArray]="workflowSelection" (onChanged)="onWorkflowChanged($event)"></app-selection>
+    </td>
+    <!-- Adapter -->
     <td>
       <b>Adapter</b>
     </td>
+    <!-- Modeler JSON -->
     <td>
       <b>Modeler JSON</b>
     </td>
+
     <td class="align-right">
-      <button (click)="onRefreshModelerJsonClicked()">Refresh</button>
+      <button (click)="buildModeler()">Build</button>
+      <button (click)="refreshModelerData()">Refresh Modeler</button>
     </td>
+
   </tr>
   <tr>
-    <td colspan="3">
-      <textarea #rawJsonElement rows="10" cols="50">
+    <!-- Definition JSON -->
+    <td colspan="2">
+      <textarea #definitionJsonElement rows="10" cols="50">
           </textarea>
     </td>
-    <td>
-      <app-selection [selectionArray]="adapterSelection" (onSchemaChanged)="onAdapterChanged($event)"></app-selection>
+
+    <!-- Workflow JSON -->
+    <td colspan="2">
+      <textarea #workflowJsonElement rows="10" cols="50">
+          </textarea>
+    </td>
+    <!-- Adapter -->
+    <td nowrap>
+      <app-selection [selectionArray]="adapterSelection" (onChanged)="onAdapterChanged($event)"></app-selection>
       ->
     </td>
+    <!-- Modeler JSON -->
     <td colspan="2">
-      <textarea #adjacencyListElement rows="10" cols="50">
+      <textarea #modelerJsonElement rows="10" cols="50">
           </textarea>
     </td>
   </tr>

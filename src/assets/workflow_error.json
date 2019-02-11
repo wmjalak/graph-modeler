@@ -1,94 +1,99 @@
 [{
-  "id": 5,
-  "workflowInstanceId": 2,
-  "taskName": "create",
-  "eventName": "created",
-  "fromState": null,
-  "toState": "start",
-  "sessionId": null,
-  "actionsExecuted": [],
-  "startedTime": "2018-12-20T13:51:02.8806154",
-  "completedTime": "2018-12-20T13:51:02.8806162"
-}, {
-  "id": 6,
-  "workflowInstanceId": 2,
-  "taskName": null,
-  "eventName": null,
-  "fromState": "start",
-  "toState": "createUpdatePerson",
-  "sessionId": null,
-  "actionsExecuted": [{
-    "name": "move",
-    "stateName": "start",
-    "started": "2018-12-20T13:51:04.222731Z",
-    "completed": "2018-12-20T13:51:04.2301759Z",
-    "ctxChanges": null,
-    "eventRequest": "move",
-    "statusOK": true,
-    "exceptionMessage": null
-  }],
-  "startedTime": "2018-12-20T13:51:04.2221653",
-  "completedTime": "2018-12-20T13:51:04.254246"
-}, {
-  "id": 7,
-  "workflowInstanceId": 2,
-  "taskName": null,
-  "eventName": null,
-  "fromState": "createUpdatePerson",
-  "toState": "provisionUserAccounts",
-  "sessionId": null,
-  "actionsExecuted": [{
-    "name": "move",
-    "stateName": "createUpdatePerson",
-    "started": "2018-12-20T13:51:06.2822174Z",
-    "completed": "2018-12-20T13:51:06.2875122Z",
-    "ctxChanges": null,
-    "eventRequest": "ok",
-    "statusOK": true,
-    "exceptionMessage": null
-  }],
-  "startedTime": "2018-12-20T13:51:06.2818312",
-  "completedTime": "2018-12-20T13:51:06.3064493"
-}, {
-  "id": 8,
-  "workflowInstanceId": 2,
-  "taskName": null,
-  "eventName": null,
-  "fromState": "provisionUserAccounts",
-  "toState": "error",
-  "sessionId": null,
-  "actionsExecuted": [{
-    "name": "provisionUserAccount",
-    "stateName": "provisionUserAccounts",
-    "started": "2018-12-20T13:51:08.3395116Z",
-    "completed": "2018-12-20T13:51:08.4108241Z",
-    "ctxChanges": {
-      "result": "Provision Request to Add IdM UserAccount completed"
-    },
-    "eventRequest": null,
-    "statusOK": true,
-    "exceptionMessage": null
-  }, {
-    "name": "provisionUserAccount",
-    "stateName": "provisionUserAccounts",
-    "started": "2018-12-20T13:51:08.4180589Z",
-    "completed": "2018-12-20T13:51:08.5696241Z",
-    "ctxChanges": {
-      "result": "Provision Request to Add AD UserAccount completed"
-    },
-    "eventRequest": null,
-    "statusOK": true,
-    "exceptionMessage": null
-  }, {
-    "name": "provisionUserAccount",
-    "stateName": "provisionUserAccounts",
-    "started": "2018-12-20T13:51:08.575583Z",
-    "completed": "2018-12-20T13:51:08.7802325Z",
-    "ctxChanges": null,
-    "eventRequest": null,
-    "statusOK": false,
-    "exceptionMessage": "Object reference not set to an instance of an object."
-  }],
-  "startedTime": "2018-12-20T13:51:08.3391043",
-  "completedTime": "2018-12-20T13:51:08.7968961"
-}]
+    "id": 1,
+    "workflowInstanceId": 1,
+    "taskName": "create",
+    "eventName": "created",
+    "fromState": null,
+    "toState": "start",
+    "sessionId": null,
+    "actionsExecuted": [],
+    "startedTime": "2019-01-30T12:32:59.7239037",
+    "completedTime": "2019-01-30T12:32:59.7239724"
+  },
+  {
+    "id": 2,
+    "workflowInstanceId": 1,
+    "taskName": null,
+    "eventName": null,
+    "fromState": "start",
+    "toState": "createUpdatePerson",
+    "sessionId": null,
+    "actionsExecuted": [{
+      "name": "move",
+      "stateName": "start",
+      "started": "2019-01-30T12:32:59.932874Z",
+      "completed": "2019-01-30T12:32:59.9356505Z",
+      "ctxChanges": null,
+      "eventRequest": "move",
+      "statusOK": true,
+      "exceptionMessage": null
+    }],
+    "startedTime": "2019-01-30T12:32:59.9269183",
+    "completedTime": "2019-01-30T12:32:59.9749827"
+  },
+  {
+    "id": 3,
+    "workflowInstanceId": 1,
+    "taskName": null,
+    "eventName": null,
+    "fromState": "createUpdatePerson",
+    "toState": "provisionUserAccounts",
+    "sessionId": null,
+    "actionsExecuted": [{
+      "name": "move",
+      "stateName": "createUpdatePerson",
+      "started": "2019-01-30T12:33:02.144336Z",
+      "completed": "2019-01-30T12:33:02.1443406Z",
+      "ctxChanges": null,
+      "eventRequest": "ok",
+      "statusOK": true,
+      "exceptionMessage": null
+    }],
+    "startedTime": "2019-01-30T12:33:02.143922",
+    "completedTime": "2019-01-30T12:33:02.1710576"
+  },
+  {
+    "id": 4,
+    "workflowInstanceId": 1,
+    "taskName": null,
+    "eventName": null,
+    "fromState": "provisionUserAccounts",
+    "toState": "provisionUserAccounts",
+    "sessionId": null,
+    "actionsExecuted": [{
+      "name": "provision",
+      "stateName": "provisionUserAccounts",
+      "started": "2019-01-30T12:33:04.2112863Z",
+      "completed": "2019-01-30T12:33:04.4119001Z",
+      "ctxChanges": {
+        "result": "Provision Request to Add IdM UserAccount completed"
+      },
+      "eventRequest": null,
+      "statusOK": true,
+      "exceptionMessage": null
+    }],
+    "startedTime": "2019-01-30T12:33:04.2107564",
+    "completedTime": "2019-01-30T12:33:04.4338825"
+  },
+  {
+    "id": 5,
+    "workflowInstanceId": 1,
+    "taskName": null,
+    "eventName": null,
+    "fromState": "provisionUserAccounts",
+    "toState": "error",
+    "sessionId": null,
+    "actionsExecuted": [{
+      "name": "provision",
+      "stateName": "provisionUserAccounts",
+      "started": "2019-01-30T12:33:06.4807035Z",
+      "completed": "2019-01-30T12:33:08.9391185Z",
+      "ctxChanges": null,
+      "eventRequest": null,
+      "statusOK": false,
+      "exceptionMessage": "Provisioning exception from SendScimMessageToAdapter : One or more errors occurred. (No connection could be made because the target machine actively refused it)==>No connection could be made because the target machine actively refused it==>No connection could be made because the target machine actively refused it"
+    }],
+    "startedTime": "2019-01-30T12:33:06.4802025",
+    "completedTime": "2019-01-30T12:33:08.9555334"
+  }
+]

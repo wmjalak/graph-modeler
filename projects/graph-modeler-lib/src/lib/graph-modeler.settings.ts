@@ -83,7 +83,7 @@ export class GraphModelerSettings {
           style: {
             'curve-style': 'data(curve)',
             'line-color': 'data(color)',
-            'line-style': 'solid',
+            'line-style': 'data(lineStyle)',
             'line-cap': 'round',
             // 'line-fill': 'linear-gradient',
             'control-point-distances': 'data(controlPointDistances)',
