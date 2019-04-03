@@ -25,26 +25,75 @@ export class GraphModelerHelper {
       : false;
   }
 
-  static handleStraightEdges(cytoscapeInstance: any, open: boolean, node: any, nextNode: any) {
-    if (open) {
+  static handleSubNodes(
+    cytoscapeInstance: any,
+    doOpen: boolean,
+    node: any,
+    nextNode: any,
+    nodeXDistance: number,
+    nodeYPosition: number
+  ): any {
+    if (!doOpen) {
+      if (nextNode) {
+        const nodes = cytoscapeInstance.filter('node[parentId = "' + nextNode.id() + '"]');
+        nodes.remove(); // remove subnodes
+      }
+      return cytoscapeInstance.nodes();
+    }
+    const items: any[] = [];
+
+    const nodeXPosition = node.position('x');
+
+    const nextNodeId = nextNode.id();
+
+    const subNodes = [...nextNode.data().subNodes];
+
+    const edgeSources: any[] = [];
+    edgeSources.push(node.data());
+    subNodes.forEach((subNode, index) => {
+      const data = { ...subNode.data };
+      data.parentId = nextNodeId;
+      items.push({
+        group: 'nodes',
+        data: data,
+        position: {
+          x: nodeXPosition + (index + 1) * nodeXDistance,
+          y: nodeYPosition + 25
+        }
+      });
+
+      edgeSources.push(data);
+
+      items.push(
+        GraphModelerHelper.getEdge(
+          edgeSources[index],
+          edgeSources[index + 1],
+          index === 0 ? ModelerEdgeCurveType.CURVE_DOWN : ModelerEdgeCurveType.STRAIGHT
+        )
+      );
+    });
+
+    if (subNodes.length > 0) {
+      // add last edge
+      items.push(
+        GraphModelerHelper.getEdge(
+          edgeSources[edgeSources.length - 1],
+          nextNode.data(),
+          ModelerEdgeCurveType.CURVE_UP
+        )
+      );
+    }
+
+    cytoscapeInstance.add(items);
+    return cytoscapeInstance.nodes();
+  }
+
+  static handleStraightEdges(cytoscapeInstance: any, doOpen: boolean, node: any, nextNode: any) {
+    if (doOpen) {
       const connectedEdges = node.connectedEdges(el => {
         return !el.target().anySame(node);
       });
-      // cytoscapeInstance.remove(connectedEdges);
-      connectedEdges.animate(
-        {
-          position: nextNode.position(),
-          css: {
-            opacity: 0
-          }
-        },
-        {
-          duration: 100,
-          complete: () => {
-            cytoscapeInstance.remove(connectedEdges);
-          }
-        }
-      );
+      cytoscapeInstance.remove(connectedEdges);
     } else {
       cytoscapeInstance.add(
         GraphModelerHelper.getEdge(node.data(), nextNode.data(), ModelerEdgeCurveType.STRAIGHT)
@@ -76,33 +125,30 @@ export class GraphModelerHelper {
             ? 'curve-down'
             : hasSubNodes && curveType === ModelerEdgeCurveType.STRAIGHT
             ? 'top'
-              : '',
-        lineStyle: (!source.executed && !target.executed) ? 'dashed' : 'solid'
+            : '',
+        lineStyle: !source.executed && !target.executed ? 'dashed' : 'solid'
       }
     };
   }
 
   static shiftBaseNodes(
     cytoscapeInstance: any,
-    node: any,
+    doOpen: boolean,
+    currentNode: any,
     nextNode: any,
-    open: boolean,
     xDistance: number
   ) {
-    const distance = open ? xDistance : -xDistance;
     const parentNodes: string[] = [];
     let nodeFound = false;
-    const shiftCount = nextNode ? nextNode.data().subNodes.length : 0;
 
-    cytoscapeInstance.nodes().forEach(ele => {
+    cytoscapeInstance.nodes().forEach((node: any) => {
+      const id = node.id();
       if (!nodeFound) {
-        const id = ele.id();
-        if (id === node.id()) {
+        if (id === currentNode.id()) {
           nodeFound = true;
         }
       } else if (nodeFound) {
-        const id = ele.id();
-        const parentId = ele.data().parentId;
+        const parentId = node.data().parentId;
         if (parentId === undefined) {
           parentNodes.push(id);
         }
@@ -110,18 +156,12 @@ export class GraphModelerHelper {
           parentId === undefined ||
           (parentId && GraphModelerHelper.includes(parentNodes, parentId))
         ) {
-          ele.shift('x', distance * shiftCount);
+          const distance = doOpen ? xDistance : -xDistance;
+          const shiftCount = nextNode ? nextNode.data().subNodes.length : 0;
+          node.shift('x', distance * shiftCount);
         }
       }
     });
-  }
-
-  static removeActionNodes(cytoscapeInstance: any, node: any, nextNode: any) {
-    if (nextNode) {
-      const nextNodeId = nextNode.id();
-      const nodes = cytoscapeInstance.filter('node[parentId = "' + nextNodeId + '"]');
-      nodes.remove();
-    }
   }
 
   static getAsCytoscapeFormat(data: any): ElementsDefinition {

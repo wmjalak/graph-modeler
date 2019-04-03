@@ -110,18 +110,20 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private fitNodes(nodes: any = this.cy.nodes()) {
-    if (this.cy) {
-      this.cy.animate(
-        {
-          fit: {
-            eles: nodes
+    setTimeout(() => {
+      if (this.cy) {
+        this.cy.animate(
+          {
+            fit: {
+              eles: nodes
+            }
+          },
+          {
+            duration: 400
           }
-        },
-        {
-          duration: 400
-        }
-      );
-    }
+        );
+      }
+    }, 100);
   }
 
   private createCytoscape() {
@@ -138,7 +140,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     const nodes = this.cy.nodes();
-    if (nodes && nodes.length > 2) {
+    if (nodes && nodes.length > 1) {
       this.xDistance = nodes[1].position('x') - nodes[0].position('x');
       this.nodeYPosition = nodes[1].position('y');
     }
@@ -149,6 +151,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.toggleNode(nodes[index - 1]);
       }
     });
+    this.fitNodes();
 
     this.cy.on('tap', (evt: any) => {
       const group = evt.target.group ? evt.target.group() : undefined;
@@ -196,6 +199,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
             this.toggleNode(currentTopLevelNodeNode);
           }
         }
+        this.fitNodes();
       } else {
         this.selected.emit(undefined);
         if (this.AUTO_PANNING) {
@@ -225,70 +229,22 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
       this.openedNodes.push(id);
     }
 
-    // GraphModelerHelper.shiftBaseNodes(this.cy, node, nextNode, !isOpen, this.xDistance);
-
     const nextNodeHasSubnodes = nextNode
       ? nextNode.data().subNodes && nextNode.data().subNodes.length > 0
       : false;
 
-    if (!isOpen && nextNodeHasSubnodes) {
-      GraphModelerHelper.shiftBaseNodes(this.cy, node, nextNode, !isOpen, this.xDistance);
-      GraphModelerHelper.handleStraightEdges(this.cy, true, node, nextNode);
-      this.drawActions(node, nextNode);
-    } else if (isOpen) {
-      GraphModelerHelper.removeActionNodes(this.cy, node, nextNode);
-      GraphModelerHelper.shiftBaseNodes(this.cy, node, nextNode, !isOpen, this.xDistance);
-      GraphModelerHelper.handleStraightEdges(this.cy, false, node, nextNode);
-    }
-    this.fitNodes();
-  }
+    const doOpen = !isOpen && nextNodeHasSubnodes;
 
-  private drawActions(node: any, nextNode: any) {
-    const items: any[] = [];
-
-    const nodeXPosition = node.position('x');
-
-    const nextNodeId = nextNode.id();
-
-    const subNodes = [...nextNode.data().subNodes];
-
-    const edgeSources: any[] = [];
-    edgeSources.push(node.data());
-    subNodes.forEach((subNode, index) => {
-      const data = { ...subNode.data };
-      data.parentId = nextNodeId;
-      items.push({
-        group: 'nodes',
-        data: data,
-        position: {
-          x: nodeXPosition + (index + 1) * this.xDistance,
-          y: this.nodeYPosition + 25
-        }
-      });
-
-      edgeSources.push(data);
-
-      items.push(
-        GraphModelerHelper.getEdge(
-          edgeSources[index],
-          edgeSources[index + 1],
-          index === 0 ? ModelerEdgeCurveType.CURVE_DOWN : ModelerEdgeCurveType.STRAIGHT
-        )
-      );
-    });
-
-    if (subNodes.length > 0) {
-      // add last edge
-      items.push(
-        GraphModelerHelper.getEdge(
-          edgeSources[edgeSources.length - 1],
-          nextNode.data(),
-          ModelerEdgeCurveType.CURVE_UP
-        )
-      );
-    }
-
-    this.cy.add(items);
+    GraphModelerHelper.shiftBaseNodes(this.cy, doOpen, node, nextNode, this.xDistance);
+    GraphModelerHelper.handleStraightEdges(this.cy, doOpen, node, nextNode);
+    GraphModelerHelper.handleSubNodes(
+      this.cy,
+      doOpen,
+      node,
+      nextNode,
+      this.xDistance,
+      this.nodeYPosition
+    );
   }
 
   private getTopLevelNodeById(id: string, shiftIndex: number = 0): any {
