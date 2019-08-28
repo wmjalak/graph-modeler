@@ -1,4 +1,4 @@
-FROM node:8.11-stretch as builder
+FROM node:12.9.0-alpine as builder
 
 # Copy the Dynamic Form source and install required node modules
 WORKDIR /app
