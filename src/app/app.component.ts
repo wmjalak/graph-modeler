@@ -18,9 +18,9 @@ export class AppComponent implements OnInit {
   workflowSelection = ['workflow_completed', 'workflow_error', 'workflow_empty'];
   adapterSelection = ['workflowhistory'];
   workFlowInstances: any[];
-  @ViewChild('definitionJsonElement') definitionJsonElement: ElementRef;
-  @ViewChild('workflowJsonElement') workflowJsonElement: ElementRef;
-  @ViewChild('modelerJsonElement') modelerJsonElement: ElementRef;
+  @ViewChild('definitionJsonElement', {static: false}) definitionJsonElement!: ElementRef;
+  @ViewChild('workflowJsonElement', {static: false}) workflowJsonElement!: ElementRef;
+  @ViewChild('modelerJsonElement', {static: false}) modelerJsonElement!: ElementRef;
 
   constructor(private jsonService: JsonService) {}
 

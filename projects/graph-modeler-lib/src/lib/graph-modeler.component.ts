@@ -35,7 +35,7 @@ export class GraphModelerComponent implements OnInit, OnDestroy, AfterViewInit {
   versionString = version;
   AUTO_PANNING = true;
 
-  @ViewChild('cy') cyElement: ElementRef;
+  @ViewChild('cy', {static: false}) cyElement!: ElementRef;
 
   resizeObservable$: Observable<Event>;
   resizeSubscription$: Subscription;

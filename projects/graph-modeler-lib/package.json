@@ -1,6 +1,6 @@
 {
   "name": "graph-modeler",
-  "version": "0.9.4",
+  "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": ">=7.0.0 <8.0.0",
     "@angular/core": ">=7.0.0 <8.0.0",
