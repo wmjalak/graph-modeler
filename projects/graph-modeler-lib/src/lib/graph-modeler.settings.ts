@@ -17,7 +17,7 @@ const icons = {
 };
 
 export class GraphModelerSettings {
-  static properties(element: any, graphData: ElementsDefinition): CytoscapeOptions {
+  static properties(element: any, graphData: ElementsDefinition): any {
     const dagreLayout = {
       name: 'dagre',
       directed: true,
@@ -38,8 +38,10 @@ export class GraphModelerSettings {
     const ITEM_MAX_WIDTH = 60;
 
     return {
+
       container: element,
       layout: dagreLayout,
+
       style: [
         {
           selector: 'node',
@@ -48,7 +50,16 @@ export class GraphModelerSettings {
 
             width: '10',
             height: '10',
-            padding: (ele: any) => {
+            'padding-bottom': (ele: any) => {
+              return ele.data().parentId ? '0.2' : '1.2';
+            },
+            'padding-top': (ele: any) => {
+              return ele.data().parentId ? '0.2' : '1.2';
+            },
+            'padding-left': (ele: any) => {
+              return ele.data().parentId ? '0.2' : '1.2';
+            },
+            'padding-right': (ele: any) => {
               return ele.data().parentId ? '0.2' : '1.2';
             },
             content: 'data(name)',
@@ -59,7 +70,7 @@ export class GraphModelerSettings {
               return backgroundColor ? backgroundColor : 'transparent';
             },
             'background-opacity': (ele: any) => {
-              return (ele.data().backgroundColor) ? '1' : '0';
+              return (ele.data().backgroundColor) ? 1 : 0;
             },
             'background-fit': 'cover',
             'background-image': (ele: any) => {
