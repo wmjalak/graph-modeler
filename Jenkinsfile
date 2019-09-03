@@ -5,7 +5,7 @@ def BuildAndPushImage(String imageName) {
 
 	// Delete the existing source to ensure there is a clean pull
     dir ('WebApp') {
-        unstash "DynamicFormSource"
+        unstash "Source"
 
         def app = docker.build("${imageName}", "-f Dockerfile .")
         docker.withRegistry('https://idaasidmacr.azurecr.io', 'ecs_azure_container_registry_credentials') {
