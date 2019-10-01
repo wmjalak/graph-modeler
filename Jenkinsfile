@@ -1,3 +1,39 @@
+// Define the service names
+def idmDemoServices = ["idm-graphmodeler"] as String[]
+
+def BuildAndPushImage(String imageName) { 
+
+	// Delete the existing source to ensure there is a clean pull
+    dir ('WebApp') {
+        unstash "Source"
+
+        def app = docker.build("${imageName}", "-f Dockerfile .")
+        docker.withRegistry('https://idaasidmacr.azurecr.io', 'ecs_azure_container_registry_credentials') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push('latest')
+        }
+    }
+
+    sh 'rm -rf WebApp'
+}
+
+def DeployKubernetesServices(String[] serviceNames, String cluster, String namespace) {
+    
+	def KUBECTLCMD = '/usr/local/bin/kubectl'
+	def CONTAINERREGISTRY = 'idaasidmacr.azurecr.io'
+
+	// Switch to the Kubernetes Cluster & Namespace
+	sh "${KUBECTLCMD} config use-context ${cluster}"
+	sh "${KUBECTLCMD} config set-context ${cluster} --namespace ${namespace}"
+	sh "${KUBECTLCMD} get all"
+
+	// Deploy the services
+	serviceNames.each { serviceName ->
+		sh "${KUBECTLCMD} set image deployment/${serviceName} ${serviceName}=${CONTAINERREGISTRY}/${serviceName}:$BUILD_NUMBER -n ${namespace}"
+		sh "${KUBECTLCMD} rollout status deployment ${serviceName} -n ${namespace}"
+	}
+}
+
 pipeline {
     agent none
     stages {
@@ -9,10 +45,22 @@ pipeline {
                 sh 'hostname'
             }
         }
-        stage('Build') {
+        stage('BuildSite') {
+            agent { label "master" }
+            steps {
+                BuildAndPushImage("idm-graphmodeler")
+            }
+        }
+        stage('DeploySite') {
+            agent { label "master" }
+            steps {
+                DeployKubernetesServices(idmDemoServices, 'idm-aks-test', 'idm-demo')
+            }
+        }
+        stage('BuildComponent') {
             agent {
                 docker {
-                    image 'node:12.9.0-alpine'
+                    image 'node:12.9.1-alpine'
                     args '--tmpfs /.config -u root:root --privileged'
                 }
             }

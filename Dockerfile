@@ -1,14 +1,12 @@
-FROM node:12.9.0-alpine as builder
+FROM node:12.9.1-alpine as builder
 
-# Copy the Dynamic Form source and install required node modules
+# Copy the source and install required node modules
 WORKDIR /app
+COPY package.json /app
+RUN npm install
 COPY . /app
-RUN npm install && \
-    npm run package && \
-    mkdir /release && \
-    cp -r /app/dist/graph-modeler/* /release/ && \
-    mv /release/graph-modeler-*.tgz /release/graph-modeler.tgz
+RUN npm run build
 
 # Copy the compiled site into an Nginx web server container
 FROM nginx:alpine
-COPY --from=builder /release/ /usr/share/nginx/html/
+COPY --from=builder /app/dist/graph-modeler-app/ /usr/share/nginx/html/
