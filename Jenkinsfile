@@ -1,7 +1,7 @@
 // Define the service names
 def idmDemoServices = ["idm-graphmodeler"] as String[]
 
-def BuildAndPushImage(String imageName) { 
+def BuildAndPushImage(String imageName) {
 
 	// Delete the existing source to ensure there is a clean pull
     dir ('WebApp') {
@@ -18,7 +18,7 @@ def BuildAndPushImage(String imageName) {
 }
 
 def DeployKubernetesServices(String[] serviceNames, String cluster, String namespace) {
-    
+
 	def KUBECTLCMD = '/usr/local/bin/kubectl'
 	def CONTAINERREGISTRY = 'idaasidmacr.azurecr.io'
 
@@ -41,7 +41,7 @@ pipeline {
             agent { label "master" }
             steps {
                 git branch: 'master', credentialsId: 'mmtfscredentials', url: 'http://141.192.206.35:8080/tfs/DefaultCollection/IDaaS.IdM.vNext/_git/GraphModeler'
-                stash name: "Source"         
+                stash name: "Source"
                 sh 'hostname'
             }
         }
@@ -74,7 +74,7 @@ pipeline {
                 sh 'npm run package'
                 sh 'ls -la'
                 sh 'ls -la dist/graph-modeler'
-                dir ('dist/graph-modeler') { 
+                dir ('dist/graph-modeler') {
                     stash includes: 'graph-modeler-*.tgz', name: 'component'
                 }
             }
@@ -87,7 +87,7 @@ pipeline {
                     unstash 'component'
                     sh 'ls -la'
                     sh 'cp graph-modeler-*.tgz /usr/share/nginx/html/components/graph-modeler-build-$BUILD_NUMBER.tgz'
-                    sh 'mv graph-modeler-*.tgz /usr/share/nginx/html/components/graph-modeler-version-1.0.0.tgz'
+                    sh 'mv graph-modeler-*.tgz /usr/share/nginx/html/components/graph-modeler-version-1.1.0.tgz'
                     sh 'ls -la /usr/share/nginx/html/components'
                 }
             }
