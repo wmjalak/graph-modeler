@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/graph-modeler",
+  "dest": "../../dist/graph-modeler-lib",
   "lib": {
     "entryFile": "src/public_api.ts"
   }
