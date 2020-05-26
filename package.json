@@ -10,7 +10,9 @@
     "e2e": "ng e2e",
     "build:version": "node ./build-pre.js",
     "build:lib": "ng build --prod graph-modeler-lib",
+    "copy-readme": "cp .\\README.md .\\dist\\graph-modeler-lib",
     "npm:pack": "cd dist/graph-modeler && npm pack",
+    "publish": "npm run build:lib && npm run copy-readme && cd dist/graph-modeler-lib && npm publish",
     "package": "npm run build:version && npm run build:lib && npm run npm:pack"
   },
   "private": true,
