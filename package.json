@@ -11,7 +11,8 @@
     "build:version": "node ./build-pre.js",
     "build:lib": "ng build --prod graph-modeler-lib",
     "npm:pack": "cd dist/graph-modeler && npm pack",
-    "package": "npm run build:version && npm run build:lib && npm run npm:pack"
+    "package": "npm run build:version && npm run build:lib && npm run npm:pack",
+    "publish": "rm -rf dist/ && npm run build:version && npm run build:lib && cd dist/graph-modeler-lib && npm publish"
   },
   "private": true,
   "dependencies": {
