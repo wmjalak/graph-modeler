@@ -87,7 +87,7 @@ pipeline {
                     unstash 'component'
                     sh 'ls -la'
                     sh 'cp graph-modeler-*.tgz /usr/share/nginx/html/components/graph-modeler-build-$BUILD_NUMBER.tgz'
-                    sh 'mv graph-modeler-*.tgz /usr/share/nginx/html/components/graph-modeler-version-1.1.0.tgz'
+                    sh 'mv graph-modeler-*.tgz /usr/share/nginx/html/components/graph-modeler-version-1.2.0.tgz'
                     sh 'ls -la /usr/share/nginx/html/components'
                 }
             }

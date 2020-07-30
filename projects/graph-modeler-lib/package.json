@@ -1,13 +1,17 @@
 {
   "name": "graph-modeler",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "peerDependencies": {
-    "@angular/common": "^9.0.0",
-    "@angular/core": "^9.0.0",
+    "@angular/common": "^10.0.0",
+    "@angular/core": "^10.0.0",
     "cytoscape": "3.3.1 < 4",
     "cytoscape-dagre": "2.2.2 < 3",
     "dagre": "0.8.4 < 1",
     "@types/cytoscape": "3.2.9 < 4",
     "@types/dagre": "0.7.40 < 1"
+  }
+,
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }
